@@ -8,7 +8,14 @@ contract EthSwap {
     uint public rate = 100;
     bool public Flagg;
 
-    event TokenPurchased(
+    event TokensPurchased(
+        address account,
+        address token,
+        uint amount,
+        uint rate
+    );
+
+    event TokensSold(
         address account,
         address token,
         uint amount,
@@ -34,9 +41,30 @@ contract EthSwap {
 
         token.transfer(msg.sender, tokenAmount);
 
-        emit TokenPurchased(msg.sender, address(token), tokenAmount, rate);
+        emit TokensPurchased(msg.sender, address(token), tokenAmount, rate);
 
         Flagg = false;
+    }
+
+    function sellTokens(uint _tokenAmount) public {
+
+        // Check if seller has sufficient tokens
+        require(token.balanceOf(msg.sender) >= _tokenAmount);
+
+        // Calculate equivalent amount of ether to transfer to seller
+        uint eth_eq = _tokenAmount / rate;
+
+        // Check if contract has sufficient ether to transfer
+        require(address(this).balance >= eth_eq);
+
+        // transfer the tokens back to the contract
+        token.transferFrom(msg.sender, address(this), _tokenAmount);
+
+        // Send the ETH back to the seller
+        msg.sender.transfer(eth_eq);
+
+        emit TokensSold(msg.sender, address(token), _tokenAmount, rate);
+
     }
 
 }

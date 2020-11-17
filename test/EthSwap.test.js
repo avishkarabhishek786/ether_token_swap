@@ -73,6 +73,40 @@ contract('EthSwap', (accounts)=>{
             assert.equal(event.rate.toString(), '100');
 
         })
+
+    })
+
+    describe('sellTokens()', async () => {
+        
+        let result;
+
+        before(async () => {
+
+            await token.approve(ethSwap.address, tokens('100'), {from: accounts[1]})
+
+            result = await ethSwap.sellTokens(
+                tokens('100'),    
+                {from: accounts[1]}
+            )
+        })
+
+        it('should allow users to sell tokens for ethers', async () => {
+            
+            // Check user balance after 
+            let userBalance = await token.balanceOf(accounts[1]);
+            assert.equal(userBalance.toString(), tokens('0'));
+
+            // check ethSwap balance after purchase
+            let ethSwapBalance;
+            ethSwapBalance = await token.balanceOf(ethSwap.address);
+            assert.equal(ethSwapBalance.toString(), tokens('1000000'));
+            ethSwapBalance = await web3.eth.getBalance(ethSwap.address);
+            assert.equal(ethSwapBalance.toString(), web3.utils.toWei('0', 'Ether'))
+
+            
+
+        })
+
     })
 
 })
