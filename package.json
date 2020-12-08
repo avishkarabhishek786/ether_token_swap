@@ -1,7 +1,7 @@
 {
   "name": "eth-swap exchange",
   "version": "0.1.0",
-  "description": "An Ethereum swap exchange",
+  "description": "An Ethereum to Token swap exchange",
   "author": "avishkarabhishek786@gmail.com",
   "dependencies": {
     "babel-polyfill": "6.26.0",
